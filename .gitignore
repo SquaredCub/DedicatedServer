@@ -5,3 +5,6 @@ DedicatedServer.sln.DotSettings.user
 .idea
 .vs
 **/Icons/Badges
+# server branch: fetched game assemblies and the local test rig (2 GB server install, world, logs)
+.gamelibs/
+.local/

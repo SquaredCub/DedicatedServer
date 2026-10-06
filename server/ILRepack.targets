@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Same merge as upstream's DedicatedServer/ILRepack.targets: ServerSync is internalized into the plugin. -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Target Name="ILRepacker" AfterTargets="Build">
+        <ItemGroup>
+            <InputAssemblies Include="$(TargetPath)"/>
+            <InputAssemblies Include="$(OutputPath)ServerSync.dll"/>
+        </ItemGroup>
+        <ILRepack Parallel="true" Internalize="true" InputAssemblies="@(InputAssemblies)" OutputFile="$(TargetPath)" TargetKind="SameAsPrimaryAssembly" LibraryPath="$(OutputPath);$(GameLibs)"/>
+    </Target>
+</Project>

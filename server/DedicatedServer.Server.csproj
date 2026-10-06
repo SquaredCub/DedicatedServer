@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- server branch: builds the upstream source (../DedicatedServer/*.cs, untouched layout) with the
+       .NET 8 SDK alone, against game assemblies fetched from the game box (tools/fetch-gamelibs.ps1).
+       The upstream .csproj needs Visual Studio's MSBuild for its ILRepack task; this one does not.
+       Release output lands in ../dist/Smoothbrain-DedicatedServer/ next to manifest.json. -->
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>DedicatedServer</AssemblyName>
+    <RootNamespace>DedicatedServer</RootNamespace>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DebugType>none</DebugType>
+    <GameLibs>$(MSBuildThisFileDirectory)..\.gamelibs</GameLibs>
+    <DistDir>$(MSBuildThisFileDirectory)..\dist\Smoothbrain-DedicatedServer</DistDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\DedicatedServer\**\*.cs" Exclude="..\DedicatedServer\bin\**;..\DedicatedServer\obj\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.3" PrivateAssets="all" />
+    <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.48" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony"><HintPath>$(GameLibs)\0Harmony.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="BepInEx"><HintPath>$(GameLibs)\BepInEx.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="assembly_valheim"><HintPath>$(GameLibs)\assembly_valheim.dll</HintPath><Private>false</Private><Publicize>true</Publicize></Reference>
+    <Reference Include="assembly_utils"><HintPath>$(GameLibs)\assembly_utils.dll</HintPath><Private>false</Private><Publicize>true</Publicize></Reference>
+    <Reference Include="assembly_guiutils"><HintPath>$(GameLibs)\assembly_guiutils.dll</HintPath><Private>false</Private><Publicize>true</Publicize></Reference>
+    <Reference Include="UnityEngine"><HintPath>$(GameLibs)\UnityEngine.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>$(GameLibs)\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
+    <!-- merged into the output by ILRepack.targets, as upstream ships it -->
+    <Reference Include="ServerSync"><HintPath>..\DedicatedServer\Libs\ServerSync.dll</HintPath><Private>true</Private></Reference>
+  </ItemGroup>
+  <Target Name="Dist" AfterTargets="ILRepacker" Condition="'$(Configuration)' == 'Release'">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(DistDir)" />
+  </Target>
+</Project>
