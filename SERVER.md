@@ -10,6 +10,8 @@ override is server-only*).
 | `master` | upstream, untouched | — |
 | `fix/raid-spawners` | raids spawn creatures when the server owns spawners | [PR #4](https://github.com/blaxxun-boop/DedicatedServer/pull/4) |
 | `fix/ship-sail` | server-owned ships no longer free-fall when the sail moves | not opened yet |
+| `fix/leviathan-dive` | a leviathan's dive reaches the clients, so they get its stat ("No Time For Snoozing") | not opened yet |
+| `fix/ashlands-ocean-key` | a server-owned ship on the boiling sea sets `AshlandsOcean` (Hugin's warning) | not opened yet |
 | `server` | `master` + every `fix/*` + the build/test tooling below | never PR'd |
 
 `fix/*` branches each hold one upstream-shaped commit and nothing else. Tooling lives only on
@@ -78,6 +80,17 @@ Test-harness shortcuts, so a reader doesn't mistake them for game behaviour:
   of the deep spot.
 - **Visibility hook.** A postfix on `ZDOMan.FindSectorObjects` adds the test area to the list
   DedicatedServer builds from connected players only.
+
+**LocalPlayerTest** (`-Harness LocalPlayerTest`, quits the server when done, "LPTEST" lines in the
+log) spawns a server-owned leviathan and calls `Leave()`, then a Karve on the boiling sea and runs
+`TakeAshlandsDamage` with nobody aboard and with a spawned `Player` aboard. A postfix on
+`ZRoutedRpc.RouteRPC` counts `RPC_Left` handed on towards clients. On 1.0.16:
+
+| | `1.0.3-server.1` | `server` |
+|---|---|---|
+| `Leave()` on the server | `NullReferenceException` | no exception |
+| `RPC_Left` routed to clients | 0 | 1 |
+| `AshlandsOcean` key, player aboard / nobody aboard | not set / not set | set / not set |
 
 **RaidTrigger** forces a raid 60 s after a player joins and counts raid creatures. It needs a game
 client: join `127.0.0.1:2456`, password `raidfix1`.

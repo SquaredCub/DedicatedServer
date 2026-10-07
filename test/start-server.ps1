@@ -2,10 +2,10 @@
 # DedicatedServer build and test harness. Foreground; the caller backgrounds it and stops it by PID.
 #   -Build  stock  .local/stock/DedicatedServer.dll (the released 1.0.3, for baselines)
 #           dist   dist/Smoothbrain-DedicatedServer/DedicatedServer.dll (this branch's build)
-#   -Harness ShipTest | RaidTrigger | none   test plugin to install (built from test/<name>)
+#   -Harness ShipTest | RaidTrigger | LocalPlayerTest | none   test plugin to install (built from test/<name>)
 param(
     [ValidateSet('stock', 'dist')][string]$Build = 'dist',
-    [ValidateSet('ShipTest', 'RaidTrigger', 'none')][string]$Harness = 'ShipTest'
+    [ValidateSet('ShipTest', 'RaidTrigger', 'LocalPlayerTest', 'none')][string]$Harness = 'ShipTest'
 )
 
 $ErrorActionPreference = "Stop"
@@ -18,7 +18,7 @@ $dll = if ($Build -eq 'stock') { "$local\stock\DedicatedServer.dll" } else { "$r
 Copy-Item $dll "$plugins\Smoothbrain-DedicatedServer\DedicatedServer.dll" -Force
 Write-Host "DedicatedServer.dll <- $dll" -ForegroundColor Cyan
 
-foreach ($h in 'ShipTest', 'RaidTrigger') { Remove-Item "$plugins\$h" -Recurse -Force -ErrorAction SilentlyContinue }
+foreach ($h in 'ShipTest', 'RaidTrigger', 'LocalPlayerTest') { Remove-Item "$plugins\$h" -Recurse -Force -ErrorAction SilentlyContinue }
 if ($Harness -ne 'none') {
     New-Item -ItemType Directory -Force "$plugins\$Harness" | Out-Null
     Copy-Item "$root\test\$Harness\bin\Release\net481\$Harness.dll" "$plugins\$Harness\" -Force

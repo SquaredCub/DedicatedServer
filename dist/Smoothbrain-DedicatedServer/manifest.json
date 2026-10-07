@@ -1,7 +1,7 @@
 {
   "name": "DedicatedServer",
-  "version_number": "1.0.3-server.1",
+  "version_number": "1.0.3-server.2",
   "website_url": "https://github.com/SquaredCub/DedicatedServer/tree/server",
-  "description": "Server-only build of blaxxun-boop/DedicatedServer 1.0.3 + raid spawner fix (PR #4) + ship sail fix. Plugin version stays 1.0.3 so stock clients pass the version check.",
+  "description": "Server-only build of blaxxun-boop/DedicatedServer 1.0.3 + raid spawner fix (PR #4) + ship sail fix + leviathan dive and Ashlands ocean key fixes. Plugin version stays 1.0.3 so stock clients pass the version check.",
   "dependencies": []
 }
